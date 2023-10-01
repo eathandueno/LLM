@@ -1,0 +1,23 @@
+{
+  "name": "llm",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@tensorflow/tfjs": "^4.11.0",
+    "axios": "^1.5.1",
+    "dotenv": "^16.3.1",
+    "latest": "^0.2.0",
+    "openai": "^4.11.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
