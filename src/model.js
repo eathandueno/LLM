@@ -1,6 +1,18 @@
-const tf = require('@tensorflow/tfjs-node');
-const path = require('path');  // Added for constructing paths
-const { loadData } = require('./dataLoader.js');
+import path from 'path';
+import { loadData, convertToSequences, createDataset } from './dataLoader.js';
+import * as tf from '@tensorflow/tfjs-node';
+import fs from 'fs';  // Importing fs for file reading
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+async function evaluateModel(model, testDataset) {
+  const evaluation = model.evaluate(testDataset.featureTensor, testDataset.labelTensor);
+  const [loss, accuracy] = evaluation;
+  console.log(`Model Evaluation: Loss = ${loss.arraySync()}, Accuracy = ${accuracy.arraySync()}`);
+}
 
 async function createModel(vocabSize, embeddingDim) {
   const model = tf.sequential();
@@ -14,45 +26,39 @@ async function compileAndTrainModel(model, trainDataset, valDataset) {
   model.compile({ optimizer: 'adam', loss: 'categoricalCrossentropy', metrics: ['accuracy'] });
   
   const history = await model.fit(trainDataset.featureTensor, trainDataset.labelTensor, {
-    epochs: 10, 
+    epochs: 10,
     validationData: [valDataset.featureTensor, valDataset.labelTensor],
-    callbacks: tf.node.tensorBoard(path.join(__dirname, '..', 'logs'))  // Updated path
+    callbacks: tf.node.tensorBoard(path.join(__dirname, '..', 'logs'))
   });
   return history;
 }
 
-async function evaluateModel(model, testDataset) {
-  const evaluation = model.evaluate(testDataset.featureTensor, testDataset.labelTensor);
-  console.log('Model Evaluation:', evaluation);
-}
+
 
 async function run() {
-    const { trainDataset, valDataset, wordIndex } = loadData();
-    const vocabSize = Object.keys(wordIndex).length + 1;
-    const embeddingDim = 64;
-    
-    const model = await createModel(vocabSize, embeddingDim);
-    await compileAndTrainModel(model, trainDataset, valDataset);
-    
-    // Assuming you have separate test data processed in a similar way to training data.
-    const testFilePath = path.join(__dirname, '..', 'data', 'processed', 'test_data.json'); 
-    const rawTestData = fs.readFileSync(testFilePath);
-    const processedTestData = JSON.parse(rawTestData);
+  const { trainDataset, valDataset, wordIndex } = loadData();
+  const vocabSize = Object.keys(wordIndex).length + 1;
+  const embeddingDim = 64;
+  const lstmUnits = 128;
+  const dropoutRate = 0.2; // Adjust dropout rate for regularization
+  const learningRate = 0.001; // Adjust learning rate
+
+  const model = await createModel(vocabSize, embeddingDim, lstmUnits, dropoutRate);
+  await compileAndTrainModel(model, trainDataset, valDataset, learningRate);
+
   
-    // Assuming that test data needs similar processing as the training data.
-    const testSequences = convertToSequences(processedTestData, wordIndex); 
-    const testDataset = createDataset(testSequences, wordIndex);
-    
-    await evaluateModel(model, testDataset);  // Evaluate the model
-    
-    const modelSavePath = path.join(__dirname, '..', 'saved_model');  // Updated path
-    await model.save(`file://${modelSavePath}`);
-  }
-const { createModel } = require('../model');
+  const testFilePath = path.join(__dirname, '..', 'data', 'processed', 'test_data.json');
+  const rawTestData = fs.readFileSync(testFilePath);
+  const processedTestData = JSON.parse(rawTestData);
 
-test('createModel should return a defined object', async () => {
-  const model = await createModel(1000, 16);
-  expect(model).toBeDefined();
-});
+  const testSequences = convertToSequences(processedTestData, wordIndex);
+  const testDataset = createDataset(testSequences, wordIndex);
+  
+  await evaluateModel(model, testDataset);
+  
+  const modelSavePath = path.join(__dirname, '..', 'models');
 
-  run();
+  await model.save(`file://${modelSavePath}`);
+}
+
+run();

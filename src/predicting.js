@@ -1,10 +1,13 @@
 // predicting.js (New File for Making Predictions Offline)
-const fs = require('fs'); // Importing fs to read the file
-const path = require('path');  // Importing path to construct paths
-const tf = require('@tensorflow/tfjs-node');
-
+import fs from 'fs';
+import path from 'path';
+import * as tf from '@tensorflow/tfjs-node';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 async function loadModel() {
-  const model = await tf.loadLayersModel('file://./saved_model/model.json');
+  const model = await tf.loadLayersModel('file://./models/model.json');
   return model;
 }
 
