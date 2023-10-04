@@ -5,8 +5,10 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "jest"
-  },
+  "preprocess": "node src/dataLoader.js && node src/dataProcesser.js",
+  "train": "node src/model.js",
+  "retrain": "npm run preprocess && npm run train"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",
