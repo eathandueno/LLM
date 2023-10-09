@@ -11,7 +11,7 @@ const openai = new OpenAI({apiKey:process.env.OPEN_AI_KEY});
 
 const initialMessage = { role: "system", content: "You are a knowledgeable entity capable of generating diverse and informative responses for testing purposes." };
 const dirname = path.dirname(fileURLToPath(import.meta.url));
-const promptsFilePath = path.join(dirname, '..', 'data', 'prompts', 'alt_prompts.json');
+const promptsFilePath = path.join(dirname, '..', 'data', 'prompts', 'med_prompts.json');
 const rawPrompts = fs.readFileSync(promptsFilePath);
 const prompts = JSON.parse(rawPrompts);
 
@@ -45,7 +45,7 @@ async function saveResponses() {
   const newResponses = await generateResponses();
   
   // Read existing responses
-  const filePath = path.join(dirname, '..', 'data', 'responses', 'generated_responses.json');
+  const filePath = path.join(dirname, '..', 'data', 'responses', 'med_generated_responses.json');
   const existingDataRaw = fs.readFileSync(filePath);
   const existingData = JSON.parse(existingDataRaw);
 
@@ -57,4 +57,4 @@ async function saveResponses() {
 }
 
   
-  saveResponses();
+saveResponses();

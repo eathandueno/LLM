@@ -18,7 +18,7 @@ export function padSequences(sequences, maxlen, padding='post', truncating='post
 }
 
 export function loadData() {
-  const processedFilePath = path.join(__dirname, '..', 'data', 'processed', 'processed_data.json');
+  const processedFilePath = path.join(__dirname, '..', 'data', 'processed', 'med_processed_data.json');
   const rawData = fs.readFileSync(processedFilePath);
   const processedData = JSON.parse(rawData);
 
@@ -29,7 +29,7 @@ export function loadData() {
   const trainDataset = createDataset(trainSequences, wordIndex);
   const valDataset = createDataset(valSequences, wordIndex);
 
-  const wordIndexFilePath = path.join(__dirname, '..', 'data', 'processed', 'word_index.json');
+  const wordIndexFilePath = path.join(__dirname, '..', 'data', 'processed', 'med_word_index.json');
   fs.writeFileSync(wordIndexFilePath, JSON.stringify(wordIndex, null, 2));
   console.log(`wordIndex saved to ${wordIndexFilePath}`);
 

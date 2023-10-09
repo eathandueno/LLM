@@ -7,7 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 function processData() {
-  const filePath = path.join(__dirname, '..', 'data', 'responses', 'generated_responses.json');
+  const filePath = path.join(__dirname, '..', 'data', 'responses', 'med_generated_responses.json');
   const rawData = fs.readFileSync(filePath);
   const responses = JSON.parse(rawData);
 
@@ -16,7 +16,7 @@ function processData() {
     processedData[prompt] = response.split(' ');
   }
 
-  const processedFilePath = path.join(__dirname, '..', 'data', 'processed', 'processed_data.json');
+  const processedFilePath = path.join(__dirname, '..', 'data', 'processed', 'med_processed_data.json');
   fs.writeFileSync(processedFilePath, JSON.stringify(processedData, null, 2));
   console.log(`Processed data saved to ${processedFilePath}`);
 }

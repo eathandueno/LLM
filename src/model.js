@@ -47,7 +47,7 @@ async function run() {
   await compileAndTrainModel(model, trainDataset, valDataset, learningRate);
 
   
-  const testFilePath = path.join(__dirname, '..', 'data', 'processed', 'test_data.json');
+  const testFilePath = path.join(__dirname, '..', 'data', 'processed', 'med_test_data.json');
   const rawTestData = fs.readFileSync(testFilePath);
   const processedTestData = JSON.parse(rawTestData);
 

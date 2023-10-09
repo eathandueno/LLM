@@ -22,11 +22,11 @@ async function runPredictions() {
     
     // Example inputData Preparation: This should be a sequence like the ones you used for training.
     // This is a placeholder, replace with actual input data processing logic.
-    const inputSequence = ["word1", "word2", "word3"]; // Example, replace with actual input data.
+    const inputSequence = ["How soon can I walk after knee surgery?", "I have pain in my knee when I climb stairs.", "I hear a clicking sound in my hip."]; // Example, replace with actual input data.
     
     // Convert the input sequence to the format used for training.
     // Use appropriate preprocessing, tokenization, and conversion to tensor.
-    const wordIndexFilePath = path.join(__dirname, '..', 'data', 'processed', 'word_index.json');
+    const wordIndexFilePath = path.join(__dirname, '..', 'data', 'processed', 'med_word_index.json');
     const rawWordIndex = fs.readFileSync(wordIndexFilePath);
     const wordIndex = JSON.parse(rawWordIndex);
     const sequence = inputSequence.map(word => wordIndex[word] || 0); 
