@@ -15,10 +15,12 @@ async function evaluateModel(model, testDataset) {
 }
 
 async function createModel(vocabSize, embeddingDim) {
-  const model = tf.sequential();
-  model.add(tf.layers.embedding({inputDim: vocabSize, outputDim: embeddingDim}));
-  model.add(tf.layers.lstm({units: 128, returnSequences: false}));
-  model.add(tf.layers.dense({units: vocabSize, activation: 'softmax'}));
+  const input = tf.input({shape:[null]});
+  const embedding = tf.layers.embedding({inputDim:vocabSize, outputDim:embeddingDim}).apply(input);
+  const lstm = tf.layers.lstm({units:128,returnSequences:false}).apply(embedding);
+  const output = tf.layers.dense({units:vocabSize,activation:'softmax'}).apply(lstm);
+
+  const model = tf.model({inputs:input,outputs:output});
   return model;
 }
 
