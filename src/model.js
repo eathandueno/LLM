@@ -11,7 +11,7 @@ const __dirname = dirname(__filename);
 async function evaluateModel(model, testDataset) {
   const evaluation = model.evaluate(testDataset.featureTensor, testDataset.labelTensor);
   const [loss, accuracy] = evaluation;
-  console.log(`Model Evaluation: Loss = ${loss.arraySync()}, Accuracy = ${accuracy.arraySync()}`);
+  // console.log(`Model Evaluation: Loss = ${loss.arraySync()}, Accuracy = ${accuracy.arraySync()}`);
 }
 
 async function createModel(vocabSize, embeddingDim) {
@@ -40,8 +40,8 @@ async function run() {
   const vocabSize = Object.keys(wordIndex).length + 1;
   const embeddingDim = 64;
   const lstmUnits = 128;
-  const dropoutRate = 0.2; // Adjust dropout rate for regularization
-  const learningRate = 0.001; // Adjust learning rate
+  const dropoutRate = 0.3; // Adjust dropout rate for regularization
+  const learningRate = 0.002; // Adjust learning rate
 
   const model = await createModel(vocabSize, embeddingDim, lstmUnits, dropoutRate);
   await compileAndTrainModel(model, trainDataset, valDataset, learningRate);
@@ -56,9 +56,10 @@ async function run() {
   
   await evaluateModel(model, testDataset);
   
-  const modelSavePath = path.join(__dirname, '..', 'models');
-
+  const timestamp = new Date().toISOString();
+  const modelSavePath = path.join(__dirname, '..', 'models', `model_${timestamp}`);
   await model.save(`file://${modelSavePath}`);
+
 }
 
 run();

@@ -13,7 +13,8 @@ function processData() {
 
   const processedData = {};
   for (const [prompt, response] of Object.entries(responses)) {
-    processedData[prompt] = response.split(' ');
+    let cleanedResponse = response.replace(/\n/g, ' ').replace(/[.,!?]/g, ' ');
+    processedData[prompt] = cleanedResponse.match(/\b\w+\b/g);
   }
 
   const processedFilePath = path.join(__dirname, '..', 'data', 'processed', 'med_processed_data.json');
