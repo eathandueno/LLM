@@ -19,7 +19,6 @@ async function createModel(vocabSize, embeddingDim) {
   const embedding = tf.layers.embedding({inputDim:vocabSize, outputDim:embeddingDim}).apply(input);
   const lstm = tf.layers.lstm({units:128,returnSequences:false}).apply(embedding);
   const output = tf.layers.dense({units:vocabSize,activation:'softmax'}).apply(lstm);
-
   const model = tf.model({inputs:input,outputs:output});
   return model;
 }
@@ -41,9 +40,9 @@ async function run() {
   const { trainDataset, valDataset, wordIndex } = loadData();
   const vocabSize = Object.keys(wordIndex).length + 1;
   const embeddingDim = 64;
-  const lstmUnits = 128;
+  const lstmUnits = 256;
   const dropoutRate = 0.3; // Adjust dropout rate for regularization
-  const learningRate = 0.002; // Adjust learning rate
+  const learningRate = 0.003; // Adjust learning rate
 
   const model = await createModel(vocabSize, embeddingDim, lstmUnits, dropoutRate);
   await compileAndTrainModel(model, trainDataset, valDataset, learningRate);
